@@ -1,5 +1,5 @@
 const decimalRegex = /[\d+.]+/gm
-const unitRegex = /[a-zA-Z]+/gm
+const unitRegex = /[a-zA-Z]+/gmi
 const correctUnits = ['gal', 'L', 'lbs', 'kg', 'mi', 'km']
 
 function ConvertHandler() {
@@ -9,15 +9,19 @@ function ConvertHandler() {
     switch (decimal.length) {
       case 1: return parseFloat(decimal[0]);
       case 2: return parseFloat(decimal[0]) / parseFloat(decimal[1]);
-      default: return 'invalid number';
+      
     }
+    return 'invalid number';  
   };
 
   this.getUnit = function (input) {
     let result = input.match(unitRegex);
-    if (result === null || !correctUnits.includes(result[0])) return 'invalid unit';
-    return result[0];
-  };
+    if (result === null) return 'invalid unit';
+    if(result[0]=='l'||result[0]=='L') return 'L';
+    result[0] = result[0].toLowerCase();
+    if(!correctUnits.includes(result[0])) return 'invalid unit';
+    return result[0]
+  };  
 
   this.getReturnUnit = function (initUnit) {
     switch (initUnit) {
@@ -27,6 +31,7 @@ function ConvertHandler() {
       case 'kg': return 'lbs';
       case 'mi': return 'km';
       case 'km': return 'mi';
+      default: return 'invalid unit';
     }
   };
 
